@@ -1,5 +1,6 @@
+// src/components/common/Navbar.tsx
 import React, { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import {
   AppBar,
@@ -18,6 +19,7 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
+  Collapse,
   useMediaQuery,
   useTheme
 } from '@mui/material';
@@ -30,17 +32,27 @@ import {
   Login,
   Logout,
   Person,
-  PersonAdd
+  PersonAdd,
+  ExpandLess,
+  ExpandMore,
+  AdminPanelSettings,
+  Spa,
+  Schedule
 } from '@mui/icons-material';
 
 const Navbar: React.FC = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [adminMenuOpen, setAdminMenuOpen] = useState(false);
+  
+  // Check if user has admin role
+  const isAdmin = user?.roles && user.roles.includes('ROLE_ADMIN');
   
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -52,6 +64,10 @@ const Navbar: React.FC = () => {
   
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
+  };
+  
+  const toggleAdminMenu = () => {
+    setAdminMenuOpen(!adminMenuOpen);
   };
 
   const handleLogout = async () => {
@@ -68,11 +84,17 @@ const Navbar: React.FC = () => {
   
   // Drawer content
   const drawerContent = (
-    <Box sx={{ width: 250 }} role="presentation">
+    <Box sx={{
+      background: 'linear-gradient(45deg,rgb(255, 0, 144) 0%,rgb(96, 0, 78) 100%)', // Gradient from primary to secondary
+      color: 'white',
+      py: 8,
+      mb: 6,
+      width: 250
+    }} role="presentation">
       <List>
         <ListItem>
           <Typography variant="h6" color="primary">
-            Aplicație Programări
+            A la Program
           </Typography>
         </ListItem>
         <Divider />
@@ -93,7 +115,7 @@ const Navbar: React.FC = () => {
                 <ListItemIcon>
                   <Dashboard />
                 </ListItemIcon>
-                <ListItemText primary="Acasă" />
+                <ListItemText primary="Panou" />
               </ListItemButton>
             </ListItem>
             
@@ -102,7 +124,16 @@ const Navbar: React.FC = () => {
                 <ListItemIcon>
                   <Event />
                 </ListItemIcon>
-                <ListItemText primary="Programări" />
+                <ListItemText primary="Programările mele" />
+              </ListItemButton>
+            </ListItem>
+            
+            <ListItem>
+              <ListItemButton onClick={() => handleNavigation('/appointments/new')}>
+                <ListItemIcon>
+                  <Schedule />
+                </ListItemIcon>
+                <ListItemText primary="Programare nouă" />
               </ListItemButton>
             </ListItem>
             
@@ -115,6 +146,33 @@ const Navbar: React.FC = () => {
               </ListItemButton>
             </ListItem>
             
+            {isAdmin && (
+              <>
+                <ListItem>
+                  <ListItemButton onClick={toggleAdminMenu}>
+                    <ListItemIcon>
+                      <AdminPanelSettings />
+                    </ListItemIcon>
+                    <ListItemText primary="Administrare" />
+                    {adminMenuOpen ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                </ListItem>
+                <Collapse in={adminMenuOpen} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItemButton 
+                      sx={{ pl: 4 }}
+                      onClick={() => handleNavigation('/admin/services')}
+                    >
+                      <ListItemIcon>
+                        <Spa />
+                      </ListItemIcon>
+                      <ListItemText primary="Servicii" />
+                    </ListItemButton>
+                  </List>
+                </Collapse>
+              </>
+            )}
+            
             <Divider />
             
             <ListItem>
@@ -122,7 +180,7 @@ const Navbar: React.FC = () => {
                 <ListItemIcon>
                   <Logout />
                 </ListItemIcon>
-                <ListItemText primary="Deconectează-te" />
+                <ListItemText primary="Deconectare" />
               </ListItemButton>
             </ListItem>
           </>
@@ -142,7 +200,7 @@ const Navbar: React.FC = () => {
                 <ListItemIcon>
                   <PersonAdd />
                 </ListItemIcon>
-                <ListItemText primary="Înregistrează-te" />
+                <ListItemText primary="Înregistrare" />
               </ListItemButton>
             </ListItem>
           </>
@@ -153,7 +211,10 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="static" sx={{
+  background: 'linear-gradient(90deg,rgb(138, 108, 136) 0%,rgb(97, 63, 89) 100%)',
+  boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+}}>
         <Toolbar>
           {isMobile && (
             <IconButton
@@ -178,7 +239,7 @@ const Navbar: React.FC = () => {
               fontWeight: 800
             }}
           >
-            Dasha's Nails
+            A la Program
           </Typography>
           
           {!isMobile && (
@@ -198,7 +259,7 @@ const Navbar: React.FC = () => {
                     component={RouterLink} 
                     to="/dashboard"
                   >
-                    Acasă
+                    Panou
                   </Button>
                   
                   <Button 
@@ -208,6 +269,16 @@ const Navbar: React.FC = () => {
                   >
                     Programări
                   </Button>
+                  
+                  {isAdmin && (
+                    <Button
+                      color="inherit"
+                      onClick={handleMenu}
+                      endIcon={<ExpandMore />}
+                    >
+                      Admin
+                    </Button>
+                  )}
                 </>
               ) : null}
             </Box>
@@ -249,6 +320,19 @@ const Navbar: React.FC = () => {
                 <MenuItem onClick={() => handleNavigation('/profile')}>
                   Profil
                 </MenuItem>
+                
+                {isAdmin && !isMobile && (
+                  <>
+                    <Divider />
+                    <MenuItem 
+                      onClick={() => handleNavigation('/admin/services')}
+                    >
+                      Gestionare Servicii
+                    </MenuItem>
+                  </>
+                )}
+                
+                <Divider />
                 <MenuItem onClick={handleLogout}>Deconectare</MenuItem>
               </Menu>
             </div>
@@ -286,4 +370,4 @@ const Navbar: React.FC = () => {
   );
 };
 
-export default Navbar;
+export default Navbar

@@ -19,6 +19,7 @@ import {
   AccessTime, 
   Notifications 
 } from '@mui/icons-material';
+import nailsImage from '/src/assets/nails.png';
 
 const HomePage: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -36,19 +37,26 @@ const HomePage: React.FC = () => {
     <Box>
       {/* Hero Section */}
       <Box
-        sx={{
-          bgcolor: 'primary.main',
-          color: 'white',
-          py: 8,
-          mb: 6
-        }}
-      >
+  sx={{
+    background: 'linear-gradient(45deg,rgb(191, 150, 172) 0%,rgb(104, 58, 95) 100%)', // Gradient from primary to secondary
+    color: 'white',
+    py: 8,
+    mb: 6
+  }}
+>
         <Container maxWidth="lg">
           <Grid container spacing={4} alignItems="center">
             <Grid item xs={12} md={6}>
-              <Typography variant="h3" component="h1" gutterBottom>
-                Cele mai bune unghii vin la pachet cu cel mai bun serviciu de programări
-              </Typography>
+            <Typography 
+  variant="h3" 
+  component="h1" 
+  gutterBottom
+  sx={{ 
+    textShadow: '2px 2px 4px rgba(142, 68, 173, 0.3)' 
+  }}
+>
+  Cele mai bune unghii vin la pachet cu cel mai bun serviciu de programări
+</Typography>
               <Typography variant="h6" paragraph>
                 Rezervă serviciile tale pentru unghii online, gestionează-ți programul și primește reminder-uri. Platforma noastră face programarea simplă.
               </Typography>
@@ -74,16 +82,16 @@ const HomePage: React.FC = () => {
               </Stack>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Box
-                component="img"
-                src="/api/placeholder/600/400"
-                alt="Programare salon de unghii"
-                sx={{
-                  width: '100%',
-                  borderRadius: 2,
-                  boxShadow: 3
-                }}
-              />
+            <Box
+              component="img"
+              src={nailsImage}
+              alt="Programare salon de unghii"
+              sx={{
+                width: '100%',
+                borderRadius: 2,
+                boxShadow: 0
+              }}
+            />
             </Grid>
           </Grid>
         </Container>

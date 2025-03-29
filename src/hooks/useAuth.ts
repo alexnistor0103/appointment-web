@@ -13,7 +13,7 @@ import { LoginRequest, RegisterRequest } from '../types';
 import { getAccessToken } from '../utils/tokenUtils';
 
 export const useAuth = () => {
-  const dispatch = useDispatch<AppDispatch>(); // Use AppDispatch type here
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const auth = useSelector((state: RootState) => state.auth);
   
