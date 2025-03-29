@@ -45,7 +45,6 @@ const DashboardPage: React.FC = () => {
     if (user?.id) {
       getClientAppointments(user.id);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
   
   // Filter upcoming appointments

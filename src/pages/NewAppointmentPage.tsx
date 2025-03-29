@@ -61,6 +61,7 @@ const NewAppointmentPage: React.FC = () => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
   const [notes, setNotes] = useState('');
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+  const [selectedProvider, setSelectedProvider] = useState<number | null>(null);
   
   // Computed values
   const totalDuration = selectedServices.reduce((sum, service) => sum + service.durationMinutes, 0);
@@ -75,22 +76,19 @@ const NewAppointmentPage: React.FC = () => {
   
   // When date changes, fetch available time slots
   useEffect(() => {
-    if (selectedDate && user?.id) {
+    if (selectedDate && selectedProvider) {
       // Clear previous time slots and selected time
       clearTimeSlots();
       setSelectedTimeSlot(null);
       
       // Format date for API
       const formattedDate = format(selectedDate, 'yyyy-MM-dd');
-      console.log('Formatted date for API:', formattedDate);
       
-      // TODO: Replace with actual provider ID, for now using 1
-      const providerId = 1;
-      
-      getAvailableTimeSlots(providerId, formattedDate);
+      // Use the selected provider's ID
+      getAvailableTimeSlots(selectedProvider, formattedDate);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDate, user?.id]);
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate, selectedProvider]);
   
   // Handle next button click
   const handleNext = () => {
@@ -138,11 +136,19 @@ const NewAppointmentPage: React.FC = () => {
     setSelectedServices((prev) => {
       const serviceIndex = prev.findIndex(s => s.id === service.id);
       if (serviceIndex === -1) {
-        // Add service
+        // Add service and set provider if this is the first service
+        if (prev.length === 0 && service.providerId) {
+          setSelectedProvider(service.providerId);
+        }
         return [...prev, service];
       } else {
         // Remove service
-        return prev.filter(s => s.id !== service.id);
+        const newServices = prev.filter(s => s.id !== service.id);
+        // If no services left, clear the provider
+        if (newServices.length === 0) {
+          setSelectedProvider(null);
+        }
+        return newServices;
       }
     });
   };
@@ -152,27 +158,28 @@ const NewAppointmentPage: React.FC = () => {
     setSelectedTimeSlot(timeSlot);
   };
   
-  // Create appointment
-  const handleCreateAppointment = async () => {
-    if (!user?.id || !selectedTimeSlot) return;
-    
-    // TODO: Replace with actual provider ID, for now using 1
-    const providerId = 1;
-    
-    const appointmentData = {
-      clientId: user.id,
-      providerId: providerId,
-      startTime: selectedTimeSlot,
-      serviceIds: selectedServices.map(service => service.id),
-      notes: notes.trim() || undefined
-    };
-    
-    const result = await createAppointment(appointmentData);
-    
-    if (result) {
-      navigate('/appointments');
+const handleCreateAppointment = async () => {
+  if (!user?.id || !selectedTimeSlot || !selectedProvider) {
+    if (!selectedProvider) {
+      setFormErrors({...formErrors, provider: 'No provider selected. Please select a service first.'});
     }
+    return;
+  }
+  
+  const appointmentData = {
+    clientId: user.id,
+    providerId: selectedProvider,
+    startTime: selectedTimeSlot,
+    serviceIds: selectedServices.map(service => service.id),
+    notes: notes.trim() || undefined
   };
+  
+  const result = await createAppointment(appointmentData);
+  
+  if (result) {
+    navigate('/appointments');
+  }
+}
   
   // Render step content based on active step
   const getStepContent = (step: number) => {

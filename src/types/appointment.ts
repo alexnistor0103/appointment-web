@@ -21,6 +21,14 @@ export interface Service {
   durationMinutes: number;
   active: boolean;
   imageUrl?: string;
+  providerId: number;
+  providerName: string;
+}
+
+export interface Provider {
+  id: number;
+  name: string;
+  email?: string;
 }
 
 export interface Appointment {
@@ -28,8 +36,10 @@ export interface Appointment {
   clientId: number;
   clientName: string;
   clientEmail: string;
+  clientPhone?: string;
   providerId: number;
   providerName: string;
+  providerEmail: string;
   startTime: string;
   endTime: string;
   status: AppointmentStatusEnum;

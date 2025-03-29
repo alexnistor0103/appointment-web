@@ -3,7 +3,7 @@ import { getAccessToken, refreshAccessToken, clearTokens } from './tokenUtils';
 
 // Create axios instance with default configs
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'http://localhost:8080/api', // Your Spring Boot API base URL
   headers: {
     'Content-Type': 'application/json',
   },

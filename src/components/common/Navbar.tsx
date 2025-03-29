@@ -1,5 +1,5 @@
 // src/components/common/Navbar.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import {
@@ -82,10 +82,15 @@ const Navbar: React.FC = () => {
     setDrawerOpen(false);
   };
   
+  useEffect(() => {
+    // Acest effect se va declanșa de fiecare dată când starea isAuthenticated se schimbă
+    // Nu avem nevoie să facem nimic specific aici, doar să forțăm re-renderizarea
+  }, [isAuthenticated]);
+
   // Drawer content
   const drawerContent = (
     <Box sx={{
-      background: 'linear-gradient(45deg,rgb(255, 0, 144) 0%,rgb(96, 0, 78) 100%)', // Gradient from primary to secondary
+      background: 'linear-gradient(45deg,rgb(5, 5, 5) 0%,rgb(0, 0, 0) 55%)', // Gradient from primary to secondary
       color: 'white',
       py: 8,
       mb: 6,
@@ -147,31 +152,49 @@ const Navbar: React.FC = () => {
             </ListItem>
             
             {isAdmin && (
-              <>
-                <ListItem>
-                  <ListItemButton onClick={toggleAdminMenu}>
-                    <ListItemIcon>
-                      <AdminPanelSettings />
-                    </ListItemIcon>
-                    <ListItemText primary="Administrare" />
-                    {adminMenuOpen ? <ExpandLess /> : <ExpandMore />}
-                  </ListItemButton>
-                </ListItem>
-                <Collapse in={adminMenuOpen} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    <ListItemButton 
-                      sx={{ pl: 4 }}
-                      onClick={() => handleNavigation('/admin/services')}
-                    >
-                      <ListItemIcon>
-                        <Spa />
-                      </ListItemIcon>
-                      <ListItemText primary="Servicii" />
-                    </ListItemButton>
-                  </List>
-                </Collapse>
-              </>
-            )}
+  <>
+    <ListItem>
+      <ListItemButton onClick={toggleAdminMenu}>
+        <ListItemIcon>
+          <AdminPanelSettings />
+        </ListItemIcon>
+        <ListItemText primary="Administrare" />
+        {adminMenuOpen ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+    </ListItem>
+    <Collapse in={adminMenuOpen} timeout="auto" unmountOnExit>
+      <List component="div" disablePadding>
+        <ListItemButton 
+          sx={{ pl: 4 }}
+          onClick={() => handleNavigation('/admin/appointments')}
+        >
+          <ListItemIcon>
+            <Event />
+          </ListItemIcon>
+          <ListItemText primary="Toate Programările" />
+        </ListItemButton>
+        <ListItemButton 
+          sx={{ pl: 4 }}
+          onClick={() => handleNavigation('/admin/services')}
+        >
+          <ListItemIcon>
+            <Spa />
+          </ListItemIcon>
+          <ListItemText primary="Servicii" />
+        </ListItemButton>
+        <ListItemButton 
+          sx={{ pl: 4 }}
+          onClick={() => handleNavigation('/admin/schedules')}
+        >
+          <ListItemIcon>
+            <Schedule />
+          </ListItemIcon>
+          <ListItemText primary="Program de lucru" />
+        </ListItemButton>
+      </List>
+    </Collapse>
+  </>
+)}
             
             <Divider />
             
@@ -322,15 +345,25 @@ const Navbar: React.FC = () => {
                 </MenuItem>
                 
                 {isAdmin && !isMobile && (
-                  <>
-                    <Divider />
-                    <MenuItem 
-                      onClick={() => handleNavigation('/admin/services')}
-                    >
-                      Gestionare Servicii
-                    </MenuItem>
-                  </>
-                )}
+  <>
+    <Divider />
+    <MenuItem 
+      onClick={() => handleNavigation('/admin/appointments')}
+    >
+      Toate Programările
+    </MenuItem>
+    <MenuItem 
+      onClick={() => handleNavigation('/admin/services')}
+    >
+      Gestionare Servicii
+    </MenuItem>
+    <MenuItem 
+      onClick={() => handleNavigation('/admin/schedules')}
+    >
+      Gestionare Program de Lucru
+    </MenuItem>
+  </>
+)}
                 
                 <Divider />
                 <MenuItem onClick={handleLogout}>Deconectare</MenuItem>

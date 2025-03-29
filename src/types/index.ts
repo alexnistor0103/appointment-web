@@ -27,6 +27,7 @@ export interface RegisterRequest {
   country: CountryEnum;
   firstName: string;
   lastName: string;
+  phoneNumber: string;
 }
 
 export interface JwtResponse {

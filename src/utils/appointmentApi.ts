@@ -11,6 +11,8 @@ import {
   ScheduleException
 } from '../types/appointment';
 
+import {Provider} from "../types/appointment"
+
 // Appointment API calls
 export const getAppointmentById = async (id: number): Promise<Appointment> => {
   const response = await api.get<Appointment>(`/appointments/${id}`);
@@ -63,6 +65,13 @@ export const getAvailableTimeSlots = async (
 // Service API calls
 export const getAllServices = async (activeOnly: boolean = false): Promise<Service[]> => {
   const response = await api.get<Service[]>('/services', {
+    params: { activeOnly }
+  });
+  return response.data;
+};
+
+export const getServicesByProvider = async (providerId: number, activeOnly: boolean = false): Promise<Service[]> => {
+  const response = await api.get<Service[]>(`/services/provider/${providerId}`, {
     params: { activeOnly }
   });
   return response.data;
@@ -132,6 +141,11 @@ export const updateScheduleException = async (
 
 export const deleteScheduleException = async (id: number): Promise<void> => {
   await api.delete(`/work-schedules/exceptions/${id}`);
+};
+
+export const getProviders = async (): Promise<Provider[]> => {
+  const response = await api.get<Provider[]>('/providers');
+  return response.data;
 };
 
 export const getScheduleExceptionsForDateRange = async (

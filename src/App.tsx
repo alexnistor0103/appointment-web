@@ -1,4 +1,4 @@
-// src/App.tsx
+// src/App.tsx - Actualizat cu ruta pentru ProfilePage
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -19,6 +19,9 @@ import AppointmentDetailsPage from './pages/AppointmentDetailsPage';
 import NewAppointmentPage from './pages/NewAppointmentPage';
 import EditAppointmentPage from './pages/EditAppointmentPage';
 import ServiceManagementPage from './pages/ServiceManagementPage';
+import WorkScheduleManagementPage from './pages/WorkScheduleManagementPage';
+import AdminAppointmentsPage from './pages/AdminAppointmentsPage';
+import ProfilePage from './pages/ProfilePage'; // Import pentru noua pagină de profil
 import NotFoundPage from './pages/NotFoundPage';
 
 // Create a theme
@@ -96,12 +99,38 @@ function App() {
                 }
               />
               
+              {/* Rută nouă pentru pagina de profil */}
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              
               {/* Admin routes */}
               <Route
                 path="/admin/services"
                 element={
                   <ProtectedRoute>
                     <ServiceManagementPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/schedules"
+                element={
+                  <ProtectedRoute>
+                    <WorkScheduleManagementPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/appointments"
+                element={
+                  <ProtectedRoute>
+                    <AdminAppointmentsPage />
                   </ProtectedRoute>
                 }
               />

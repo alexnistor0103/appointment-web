@@ -61,9 +61,9 @@ export const refreshAccessToken = async (): Promise<void> => {
       refreshToken,
     });
     
-    const { accessToken, refreshToken: newRefreshToken } = response.data;
+    const { token, refreshToken: newRefreshToken } = response.data;
     
-    setAccessToken(accessToken);
+    setAccessToken(token);
     
     // If a new refresh token is provided, update it
     if (newRefreshToken) {

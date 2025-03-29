@@ -30,6 +30,7 @@ const RegisterForm: React.FC = () => {
   const [country, setCountry] = useState<CountryEnum>(CountryEnum.RO);
   const [formError, setFormError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   
   const { register, error, isLoading, clearError } = useAuth();
   
@@ -77,17 +78,19 @@ const RegisterForm: React.FC = () => {
       password,
       firstName,
       lastName,
-      country
+      country,
+      phoneNumber
     });
     
     if (success) {
-      setSuccessMessage('Înregistrare reușită! Acum vă puteți conecta.');
+      setSuccessMessage('Înregistrare în așteptare! Urmează ca un admin să accepte.');
       // Reset form
       setEmail('');
       setPassword('');
       setConfirmPassword('');
       setFirstName('');
       setLastName('');
+      setPhoneNumber('');
     }
   };
   
@@ -154,6 +157,20 @@ const RegisterForm: React.FC = () => {
                 autoComplete="family-name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
+                disabled={isLoading}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                id="phoneNumber"
+                label="Numar de telefon"
+                name="phoneNumber"
+                autoComplete="phone-number"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
                 disabled={isLoading}
               />
             </Grid>

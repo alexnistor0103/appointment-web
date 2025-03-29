@@ -29,7 +29,7 @@ export const login = createAsyncThunk(
       const response = await api.post<JwtResponse>('/auth/login', credentials);
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.detail || 'Login failed');
+      return rejectWithValue(error.response?.data?.message || 'Login failed');
     }
   }
 );
@@ -41,7 +41,7 @@ export const register = createAsyncThunk(
       const response = await api.post<User>('/auth/register', userData);
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.detail || 'Registration failed');
+      return rejectWithValue(error.response?.data?.message || 'Registration failed');
     }
   }
 );
@@ -53,7 +53,7 @@ export const getCurrentUser = createAsyncThunk(
       const response = await api.get<User>('/users/me');
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.detail || 'Failed to get user data');
+      return rejectWithValue(error.response?.data?.message || 'Failed to get user data');
     }
   }
 );
@@ -68,7 +68,7 @@ export const logout = createAsyncThunk(
     } catch (error: any) {
       // Even if the server request fails, we should clear local tokens
       clearTokens();
-      return rejectWithValue(error.response?.data?.detail || 'Logout failed');
+      return rejectWithValue(error.response?.data?.message || 'Logout failed');
     }
   }
 );
@@ -119,7 +119,7 @@ const authSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(register.fulfilled, (state, action: PayloadAction<User>) => {
+      .addCase(register.fulfilled, (state) => {
         state.isLoading = false;
         // On register success, we don't log in automatically
         // User needs to log in with their credentials

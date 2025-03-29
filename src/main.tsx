@@ -10,9 +10,7 @@ if (!rootElement) {
 } else {
   const root = createRoot(rootElement);
   root.render(
-    <StrictMode>
       <App />
-    </StrictMode>
   );
   console.log('React app mounted successfully');
 }
